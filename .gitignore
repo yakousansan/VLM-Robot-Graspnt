@@ -61,6 +61,7 @@ graspnt_robot_executor/3rdparty/
 
 # Logs
 *.log
+日志.md
 
 # Project docs and tests (not uploaded to GitHub)
 docs/

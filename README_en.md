@@ -132,31 +132,41 @@ Real execution results on an ECO65-6F arm + D435i camera. Example command: "gras
 
 #### Depth Map
 
-![Depth Map](docs/depth.png)
+<p align="center">
+  <img src="docs/depth.png" width="640" alt="Depth Map">
+</p>
 
 RealSense D435i depth map visualized with JET colormap.
 
 #### 2D Grasp Visualization
 
-![2D Grasp Visualization](docs/grasp_rgb.jpg)
+<p align="center">
+  <img src="docs/grasp_rgb.jpg" width="640" alt="2D Grasp Visualization">
+</p>
 
 RGB image with workspace overlay and grasp pose markers. Green = best candidate, gray = other candidates.
 
 #### SAM Candidate Mask Overlay
 
-![SAM Mask Overlay](docs/sam_masks.jpg)
+<p align="center">
+  <img src="docs/sam_masks.jpg" width="640" alt="SAM Mask Overlay">
+</p>
 
 Auto-generated SAM instance masks with colored regions and numbered labels. This image is sent to the VLM for target selection.
 
 #### VLM-Selected Target Mask
 
-![Selected Target Mask](docs/selected_mask.jpg)
+<p align="center">
+  <img src="docs/selected_mask.jpg" width="640" alt="Selected Target Mask">
+</p>
 
 The target mask (ID 3) chosen by VLM for the command "grasp the green object on the right". Yellow highlight + bounding box + label.
 
 #### Grasp Execution Demo
 
-![Grasp Demo](demo.gif)
+<p align="center">
+  <img src="demo.gif" width="640" alt="Grasp Demo">
+</p>
 
 Full grasp execution sequence: pre_grasp approach → grasp → close gripper → lift → home.
 

@@ -132,31 +132,41 @@ GRASPNT 是一个多模态交互式机器人抓取系统。它通过视觉语言
 
 #### 深度图
 
-![深度图](docs/depth.png)
+<p align="center">
+  <img src="docs/depth.png" width="640" alt="深度图">
+</p>
 
 RealSense D435i 采集的深度图，经 JET 伪彩色映射可视化。
 
 #### 2D 抓取可视化
 
-![2D 抓取可视化](docs/grasp_rgb.jpg)
+<p align="center">
+  <img src="docs/grasp_rgb.jpg" width="640" alt="2D 抓取可视化">
+</p>
 
 RGB 图像叠加工作区遮罩和抓取位姿标记。绿色方块为最优候选，灰色方块为其他候选。
 
 #### SAM 候选 mask 叠加图
 
-![SAM mask 叠加图](docs/sam_masks.jpg)
+<p align="center">
+  <img src="docs/sam_masks.jpg" width="640" alt="SAM mask 叠加图">
+</p>
 
 SAM 自动生成的候选实例 mask，带彩色覆盖和数字编号。该图发送给 VLM 进行目标选择。
 
 #### VLM 选中目标 mask
 
-![选中目标 mask](docs/selected_mask.jpg)
+<p align="center">
+  <img src="docs/selected_mask.jpg" width="640" alt="选中目标 mask">
+</p>
 
 VLM 根据用户指令"抓取右边绿色物体"选中的目标 mask（编号 3），黄色高亮 + 边界框 + 标签。
 
 #### 抓取执行演示
 
-![抓取演示](demo.gif)
+<p align="center">
+  <img src="demo.gif" width="640" alt="抓取演示">
+</p>
 
 完整抓取执行过程：pre_grasp 接近 → grasp 抓取 → 夹爪闭合 → lift 抬升 → home 归位。
 
