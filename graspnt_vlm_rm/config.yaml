@@ -1,0 +1,195 @@
+# GraspNet 推理参数
+graspnet:
+  # graspnet-baseline 根目录，用于加载 models/dataset/utils
+  root: "D:/ArmProject/GraspNet/graspnet-baseline"
+  # RealSense 预训练权重路径
+  checkpoint: "D:/ArmProject/GraspNet/graspnet-baseline/checkpoint-rs.tar"
+  # 每次推理采样的点云数量；越大越慢，过小会影响抓取质量
+  num_point: 50000
+  # GraspNet 视角采样数量，保持与 checkpoint/官方 demo 一致
+  num_view: 300
+  # 模型无关碰撞检测阈值；设为 0 或负数可关闭碰撞检测
+  collision_thresh: 0.01
+  # 碰撞检测点云体素大小，单位 m
+  voxel_size: 0.01
+  # 最低抓取置信分数，低于该值的候选会被过滤
+  min_score: 0.05
+  # 优先保留接近自上而下的抓取；单位度
+  top_down_angle_deg: 45
+  # GraspNet 抓取姿态中作为接近方向的旋转矩阵列索引；当前按参考实现使用第 0 列
+  approach_axis: 0
+
+# D435i 图像流参数
+camera:
+  # 抓取相机序列号；避免接入第二台 RealSense 后连错相机
+  serial: "406122071677"
+  # 彩色/深度图宽度
+  width: 640
+  # 彩色/深度图高度
+  height: 480
+  # 帧率
+  fps: 30
+
+# 抓取前相机工作区预览
+camera_preview:
+  # true 表示推理前先打开实时相机画面，确认目标在 workspace 内后再继续
+  enabled: true
+  # true 表示预览窗口右侧同时显示深度伪彩色图
+  show_depth: true
+  # OpenCV 预览窗口名称
+  window_name: "GRASPNT Workspace Preview"
+  # 按 Space 确认当前画面并继续推理
+  wait_key_continue: "space"
+  # 按 q 取消本次运行；不会推理，也不会发送抓取执行命令
+  wait_key_quit: "q"
+  # 每帧按键等待时间，单位 ms；越小画面刷新越快
+  wait_key_ms: 30
+  # true 表示取消预览时销毁 OpenCV 窗口
+  destroy_windows: false
+
+# 手眼标定外参
+hand_eye:
+  # 外参方向。camera_to_end 表示 H_cam2end：相机坐标系到机械臂末端坐标系
+  direction: "camera_to_end"
+  # 3x3 旋转矩阵，按行展开；不要在这里求逆
+  rotation:
+    [-0.28052268, 0.9588944, 0.04276162,
+     -0.95978815, -0.27973188, -0.02359614,
+     -0.01066441, -0.04766135, 0.99880662]
+  # 平移向量，单位 m；对应相机坐标系到末端坐标系
+  translation: [-0.09072013, 0.06320344, 0.03274054]
+
+# 图像中的粗工作区 mask。SAM 模式下它只做粗约束：排除画面边缘/无效区域，
+# 目标选择主要由 SAM mask 决定。
+workspace:
+  # center 表示使用图像中心矩形；all 表示只按 depth > 0 过滤
+  mode: "center"
+  # 工作区左边界，占图像宽度比例
+  x_min_ratio: 0.2
+  # 工作区右边界，占图像宽度比例
+  x_max_ratio: 0.8
+  # 工作区上边界，占图像高度比例
+  y_min_ratio: 0.2
+  # 工作区下边界，占图像高度比例
+  y_max_ratio: 0.8
+
+# SAM 选中目标后，送入 GraspNet 的目标点云配置。
+# 候选生成使用 target mask 附近点云；碰撞检测仍使用完整粗工作区点云。
+target_cloud:
+  # 对 SAM mask 做像素膨胀，给小目标和边缘抓取留出上下文；过大可能混入邻近物体。
+  dilate_px: 20
+  # 小于该有效深度点数时停止，避免对极少点云强行生成抓取。
+  min_points: 300
+  # 有效深度范围，单位 m；用于排除 0 深度、过近/过远噪声。
+  depth_min: 0.15
+  depth_max: 1.20
+
+# 抓取结果可视化与调试输出
+visualization:
+  # true 会在每次推理后显示或保存 RGB-D、点云和抓取候选；无显示器环境可先设为 false
+  enabled: true
+  # both 同时显示 2D 和 3D；2d 只显示 RGB/深度图；3d 只显示点云；save_only 只保存调试文件
+  mode: "both"
+  # 最多显示/保存前 N 个候选；第 1 个是当前代码选择的最优抓取
+  top_n: 20
+  # true 会把调试图保存到 debug_dir
+  save_debug: true
+  # 调试文件输出目录；相对路径会以运行命令时的当前目录为基准
+  debug_dir: "debug_outputs"
+  # RealSense 当前按 bgr8 采集，Open3D 显示时需要转成 RGB
+  color_order: "bgr"
+  # 2D OpenCV 窗口等待时间，0 表示一直等待按键后继续
+  wait_key_ms: 0
+  # true 会在关闭 2D 窗口后销毁所有 OpenCV 窗口
+  destroy_windows: false
+  # 3D 窗口宽度
+  window_width: 1280
+  # 3D 窗口高度
+  window_height: 720
+  # 3D 中绘制夹爪手指长度，单位 m；只影响显示，不影响真实抓取
+  gripper_finger_length: 0.06
+  # 3D 中绘制夹爪接近方向手柄长度，单位 m；只影响显示
+  gripper_approach_length: 0.04
+
+# 抓取执行阶段视频记录。Python 会在发送 UDP 执行命令前开始录制，
+# 在 C++ 返回执行结果后停止录制。
+video_recording:
+  enabled: true
+  # 相对路径会以运行命令时的当前目录为基准
+  output_dir: "debug_outputs"
+  # 录制帧率；通常与相机 fps 保持一致
+  fps: 30
+  # mp4v 对 Windows/OpenCV 兼容性较好
+  codec: "mp4v"
+  extension: ".mp4"
+
+# 抓取执行后端
+execution:
+  # 仅支持 udp_cpp：Python 只做推理与规划，机械臂运动交给独立 C++ 执行端
+  backend: "udp_cpp"
+  # Python 和 C++ 都在同一台 Windows 时使用 127.0.0.1
+  udp_host: "127.0.0.1"
+  # C++ graspnt_robot_executor 默认监听端口
+  udp_port: 6556
+  # 等待 C++ ack/pose_response 的超时时间，单位 s
+  ack_timeout_sec: 1.0
+  # 等待 C++ result 的超时时间，单位 s；真实抓取可能需要几十秒
+  result_timeout_sec: 120.0
+  # UDP 请求无响应时最多重发次数
+  max_retries: 3
+
+# 抓取安全参数
+safety:
+  # 夹爪长度/TCP 偏移补偿，单位 m；
+  gripper_length: 0.18
+  # 抓取点在 base 坐标系下的最低 z 值，单位 m；低于该高度会拒绝执行
+  min_grasp_z: 0.02
+  # 预抓取距离，单位 m；会沿抓取姿态局部 -Z 方向后退
+  pre_grasp_offset: 0.10
+  # 抓取后抬升距离，单位 m；会沿 base 坐标系 +Z 方向竖直抬起
+  lift_offset: 0.10
+  # base 坐标系下允许执行的笛卡尔空间范围，单位 m；超出会拒绝执行
+  workspace_bounds:
+    # x 方向允许范围
+    x: [-0.8, 0.8]
+    # y 方向允许范围
+    y: [-0.8, 0.8]
+    # z 方向允许范围
+    z: [0.01, 0.9]
+
+# 本地多模态模型服务配置
+vlm:
+  # OpenAI-compatible chat completions endpoint, for example vLLM.
+  endpoint: "http://10.16.45.54:8000/v1/chat/completions"
+  # Must match the served model id/name accepted by the VLM service.
+  model: "/home/p/.cache/huggingface/hub/models--Qwen--Qwen3-VL-2B-Instruct-FP8/snapshots/46485250d8854c0a9be4f1adbc67ca47e5bb6fa5"
+  # Empty for local vLLM. Set only when using a protected remote service.
+  api_token: ""
+  # HTTP request timeout in seconds.
+  timeout_sec: 60
+  # Below this confidence, do not execute.
+  min_confidence: 0.4
+
+# SAM 自动 mask 生成配置。文本交互抓取固定使用：
+# SAM proposals -> VLM 选 mask_id -> 目标点云 GraspNet。
+sam:
+  # segment-anything 的模型类型：vit_b / vit_l / vit_h
+  model_type: "vit_h"
+  # SAM 权重路径；
+  checkpoint: "D:/ArmProject/GraspNet/segment-anything/sam_vit_h_4b8939.pth"
+  device: "cuda"
+  # 自动 mask 采样密度；越大越慢，第一版先用 16。
+  points_per_side: 16
+  pred_iou_thresh: 0.88
+  stability_score_thresh: 0.90
+  min_mask_region_area: 100
+  # 过滤太小/太大的 mask，避免桌面和碎片进入 VLM 选择。
+  min_area: 300
+  max_area_ratio: 0.35
+  # 最多给 VLM 看的候选 mask 数量。
+  top_n: 12
+
+# 目标候选保护配置。
+target_filter:
+  # If no candidate falls inside target region, stop instead of grabbing another object.
+  require_target_candidate: true
