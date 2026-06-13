@@ -23,8 +23,7 @@ GRASPNT is a multimodal interactive robotic grasping system that enables a robot
 - [Pipeline](#pipeline)
 - [Architecture](#architecture)
 - [Features](#features)
-- [Demo](#demo)
-- [Output Gallery](#output-gallery)
+- [Results](#results)
 - [Dependencies](#dependencies)
 - [Environment Setup](#environment-setup)
 - [Installation](#installation)
@@ -127,23 +126,39 @@ Start → Connect robot arm → Home → UDP listen loop
 - **Automatic Video Recording**: Records the entire grasp execution (approach → close → lift) for offline analysis
 - **Rich Debug Visualization**: 2D RGB/depth overlay, 3D point cloud with gripper wireframes, SAM mask overlay, selected mask highlight, debug file export (PNG, MP4)
 
-### Demo
+### Results
 
-<p align="center">
-  <img src="demo.gif" width="640" alt="Grasp Demo">
-</p>
+Real execution results on an ECO65-6F arm + D435i camera. Example command: "grasp the green object on the right".
 
-### Output Gallery
+#### Depth Map
 
-Each text-command grasp produces the following debug outputs:
+![Depth Map](docs/depth.png)
 
-| Stage | Output | Description |
-|-------|--------|-------------|
-| 1 | `*_depth.png` | Depth map visualized as JET colormap |
-| 2 | `*_rgb_grasp.png` | Final grasp visualization — workspace overlay + grasp pose markers (green = best candidate) |
-| 3 | `*_sam_masks.png` | SAM candidate mask overlay — all proposals with colored regions and numbered labels (sent to VLM) |
-| 4 | `*_selected_mask.png` | VLM-selected target mask — highlighted with bounding box and "mask N" label |
-| 5 | `*_grasp.mp4` | Full execution video recording |
+RealSense D435i depth map visualized with JET colormap.
+
+#### 2D Grasp Visualization
+
+![2D Grasp Visualization](docs/grasp_rgb.jpg)
+
+RGB image with workspace overlay and grasp pose markers. Green = best candidate, gray = other candidates.
+
+#### SAM Candidate Mask Overlay
+
+![SAM Mask Overlay](docs/sam_masks.jpg)
+
+Auto-generated SAM instance masks with colored regions and numbered labels. This image is sent to the VLM for target selection.
+
+#### VLM-Selected Target Mask
+
+![Selected Target Mask](docs/selected_mask.jpg)
+
+The target mask (ID 3) chosen by VLM for the command "grasp the green object on the right". Yellow highlight + bounding box + label.
+
+#### Grasp Execution Demo
+
+![Grasp Demo](demo.gif)
+
+Full grasp execution sequence: pre_grasp approach → grasp → close gripper → lift → home.
 
 ### Dependencies
 

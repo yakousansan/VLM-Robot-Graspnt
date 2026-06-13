@@ -64,6 +64,10 @@ graspnt_robot_executor/3rdparty/
 
 # Project docs and tests (not uploaded to GitHub)
 docs/
+!docs/depth.png
+!docs/grasp_rgb.jpg
+!docs/sam_masks.jpg
+!docs/selected_mask.jpg
 tests/
 
 # Secrets / tokens
