@@ -129,7 +129,9 @@ GRASPNT 是一个多模态交互式机器人抓取系统。它通过视觉语言
 
 ### 演示
 
-https://github.com/user-attachments/assets/ec0aad5c-70b2-47q6-9d14-07d6c1aa174d
+<p align="center">
+  <img src="demo.gif" width="640" alt="抓取演示">
+</p>
 
 ### 输出结果展示
 
